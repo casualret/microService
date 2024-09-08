@@ -22,7 +22,7 @@ func main() {
 
 	//connect database && cash
 	db, err := MustNewStorage(cfg)
-	if err != nil {
+	if err != nil { //df
 		panic(err)
 	}
 
