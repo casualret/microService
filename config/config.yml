@@ -8,4 +8,4 @@ postgres:
   pg_host: "localhost"
   pg_port: "5432"
   pg_sslmode: "disable"
-  pg_password: "1804"
+  pg_password: "1408"

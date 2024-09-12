@@ -7,7 +7,7 @@ import (
 )
 
 type Postgres struct {
-	db *sqlx.DB
+	Database *sqlx.DB
 }
 
 func MustNewStorage(cfg *config.Config) (*Postgres, error) {
@@ -18,5 +18,5 @@ func MustNewStorage(cfg *config.Config) (*Postgres, error) {
 	if err != nil {
 		return nil, fmt.Errorf("postgres connect error: %v", err)
 	}
-	return &Postgres{db: db}, nil
+	return &Postgres{Database: db}, nil
 }
