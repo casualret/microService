@@ -24,3 +24,11 @@ type BannerWithDetails struct {
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
 }
+
+type Tag struct {
+	Name string `json:"name"`
+}
+
+type Feature struct {
+	Name string `json:"name"`
+}
