@@ -9,7 +9,7 @@ import (
 	"urlshortener/internal/models"
 )
 
-func (h *Handlers) CreateBanner(c *gin.Context) {
+func (h *Handlers) CreateBanner(c *gin.Context) { // Добавить связь many-to-many
 	const op = "handlers.CreateBanner"
 
 	var input models.CreateBannerReq
