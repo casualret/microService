@@ -1,18 +1,13 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type UserBanner struct {
 	TagID           string
 	FeatureID       string
 	UseLastRevision bool
-}
-
-type CreateBannerReq struct {
-	TagIDs    []string
-	FeatureID string
-	NewBanner *map[string]interface{}
-	IsActive  string
 }
 
 type BannerWithDetails struct {
@@ -31,4 +26,11 @@ type Tag struct {
 
 type Feature struct {
 	Name string `json:"name"`
+}
+
+type CreateBannerReq struct {
+	TagIds    []string               `json:"tag_ids"`
+	FeatureID string                 `json:"feature_id"`
+	NewBanner map[string]interface{} `json:"new_banner"`
+	IsActive  string                 `json:"is_active"`
 }
