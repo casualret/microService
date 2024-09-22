@@ -1,14 +1,13 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"urlshortener/internal/models"
 	"urlshortener/internal/storage"
 )
 
 type BannerOperations interface {
-	CreateBanner(ctx context.Context, req models.CreateBannerReq) error
+	CreateBanner(req models.CreateBannerReq) error
 	//ChangeBanner(ctx context.Context, bannerID int54, req models.ChangeBannerReq) error
 	//GetBanners(ctx context.Context, req models.GetAllBannersParams) ([]*models.BannerWithDetails, error)
 }

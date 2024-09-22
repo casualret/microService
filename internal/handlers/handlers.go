@@ -51,6 +51,7 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	//r.POST("/banner", h.CreateBanner)
 	r.POST("/tag", h.CreateTag)
 	r.POST("/feature", h.CreateFeature)
+	r.POST("/banner", h.CreateBanner)
 
 	return r
 }
