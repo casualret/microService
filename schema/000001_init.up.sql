@@ -35,8 +35,8 @@ CREATE TABLE banner_tags (
 );
 
 CREATE TABLE banner_features (
-    banner_id INTEGER NOT NULL,
-    feature_id INTEGER NOT NULL,
+    banner_id UNIQUE,
+    feature_id UNIQUE,
     PRIMARY KEY (banner_id, feature_id),
     FOREIGN KEY (banner_id) REFERENCES banners(id),
     FOREIGN KEY (feature_id) REFERENCES features(id)

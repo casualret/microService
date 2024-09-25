@@ -61,15 +61,14 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 
 	var req models.GetBannersReq
 
+	//Считываем аргументы для запроса
+
 	featureIDStr := c.Query("feature_id")
 	tagIDStr := c.Query("tag_id")
 	limitStr := c.Query("limit")
 	offsetStr := c.Query("offset")
 
-	//fmt.Println("featureIDSTR " + featureIDStr)
-	//fmt.Println("tagIDSTR " + tagIDStr)
-	//fmt.Println("limitIDSTR " + limitStr)
-	//fmt.Println("offserIDSTR " + offsetStr)
+	// Проверяем наличие Feature, создаем переменную, передаем указатель на нее в структуру
 
 	if featureIDStr != "" {
 		featureID, err := strconv.Atoi(featureIDStr)
@@ -80,8 +79,9 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 		}
 		featureIDPtr := &featureID
 		req.FeatureID = featureIDPtr
-
 	}
+
+	// Для tag
 
 	if tagIDStr != "" {
 		tagID, err := strconv.Atoi(tagIDStr)
@@ -94,6 +94,8 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 		req.TagID = tagIDPtr
 	}
 
+	// Для Limit
+
 	if limitStr != "" {
 		limit, err := strconv.Atoi(limitStr)
 		if err != nil {
@@ -104,6 +106,8 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 		limitPtr := &limit
 		req.Limit = limitPtr
 	}
+
+	//Для offset
 
 	if offsetStr != "" {
 		offset, err := strconv.Atoi(offsetStr)
@@ -116,6 +120,8 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 		req.Offset = offsetPtr
 	}
 
+	// Вызываем функцию сервиса для получения баннеров
+
 	banners, err := h.App.GetBanners(req)
 	if err != nil {
 		h.Logger.Error("Error getting banners: ", fmt.Errorf("%s: %v", op, err))
@@ -124,5 +130,8 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 	}
 
 	//c.String(200, "Пока я мастерил фрегат мир стал бессмыслено богат и полон гнуси")
+
+	// Отправляем массив структур в body
+
 	c.JSON(http.StatusOK, banners)
 }
