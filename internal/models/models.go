@@ -34,3 +34,10 @@ type CreateBannerReq struct {
 	NewBanner map[string]interface{} `json:"new_banner"`
 	IsActive  string                 `json:"is_active"`
 }
+
+type GetBannersReq struct {
+	FeatureID *int
+	TagID     *int
+	Limit     *int
+	Offset    *int
+}

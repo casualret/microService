@@ -8,8 +8,8 @@ import (
 
 type BannerOperations interface {
 	CreateBanner(req models.CreateBannerReq) error
+	GetBanners(req models.GetBannersReq) ([]*models.BannerWithDetails, error)
 	//ChangeBanner(ctx context.Context, bannerID int54, req models.ChangeBannerReq) error
-	//GetBanners(ctx context.Context, req models.GetAllBannersParams) ([]*models.BannerWithDetails, error)
 }
 
 type BannerManager struct {
@@ -29,4 +29,15 @@ func (bm *BannerManager) CreateBanner(req models.CreateBannerReq) error {
 	}
 
 	return nil
+}
+
+func (bm *BannerManager) GetBanners(req models.GetBannersReq) ([]*models.BannerWithDetails, error) {
+	const op = "service.GetBanners"
+
+	banners, err := bm.storage.GetBannersParams(req)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return banners, nil
 }

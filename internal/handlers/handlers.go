@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"log/slog"
+	"net/http"
 	"urlshortener/internal/service"
 )
 
@@ -52,6 +53,21 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	r.POST("/tag", h.CreateTag)
 	r.POST("/feature", h.CreateFeature)
 	r.POST("/banner", h.CreateBanner)
+	r.GET("/banners", h.GetBanners)
+	r.GET("/test_s", func(c *gin.Context) {
+		// Получаем данные из запроса
+		steps := c.Query("steps")
+		direction := c.Query("direction")
+
+		// Создаем структуру для ответа
+		data := gin.H{
+			"steps":     steps,
+			"direction": direction,
+		}
+
+		// Отправляем JSON-ответ
+		c.JSON(http.StatusOK, data)
+	})
 
 	return r
 }
