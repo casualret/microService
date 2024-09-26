@@ -29,10 +29,10 @@ type Feature struct {
 }
 
 type CreateBannerReq struct {
-	TagIds    []string               `json:"tag_ids"`
-	FeatureID string                 `json:"feature_id"`
+	TagIds    []int64                `json:"tag_ids"`
+	FeatureID int64                  `json:"feature_id"`
 	NewBanner map[string]interface{} `json:"new_banner"`
-	IsActive  string                 `json:"is_active"`
+	IsActive  bool                   `json:"is_active"`
 }
 
 type ChangeBannerReq struct {
