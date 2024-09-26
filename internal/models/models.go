@@ -41,3 +41,9 @@ type GetBannersReq struct {
 	Limit     *int
 	Offset    *int
 }
+
+type GetUserBannerReq struct {
+	TagID           string
+	FeatureID       string
+	UseLastRevision bool
+}

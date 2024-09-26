@@ -52,8 +52,6 @@ func (p *Postgres) GetBannersParams(req models.GetBannersReq) ([]*models.BannerW
 
 	query += ";"
 
-	fmt.Println(query)
-
 	rows, err := p.database.Queryx(query, args...)
 
 	if err != nil {

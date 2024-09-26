@@ -46,14 +46,15 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	//r := gin.Default()
 	r := gin.New()
 
-	r.GET("/user_banner", func(c *gin.Context) {
-		c.String(200, "Пока я мастерил фрегат мир стал бессмыслено богат и полон гнуси")
-	})
+	//r.GET("/user_banner", func(c *gin.Context) {
+	//	c.String(200, "Пока я мастерил фрегат мир стал бессмыслено богат и полон гнуси")
+	//})
 	//r.POST("/banner", h.CreateBanner)
 	r.POST("/tag", h.CreateTag)
 	r.POST("/feature", h.CreateFeature)
 	r.POST("/banner", h.CreateBanner)
 	r.GET("/banners", h.GetBanners)
+	r.GET("/user_banner", h.GetUserBanner)
 	r.GET("/test_s", func(c *gin.Context) {
 		// Получаем данные из запроса
 		steps := c.Query("steps")
