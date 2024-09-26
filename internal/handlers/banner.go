@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -134,4 +135,30 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 	// Отправляем массив структур в body
 
 	c.JSON(http.StatusOK, banners)
+}
+
+func (h *Handlers) DeleteBanner(c *gin.Context) {
+	const op = "handlers.DeleteBanner"
+
+	bannerIDStr := c.Param("id")
+	if bannerIDStr == "" {
+		h.Logger.Error("Incorrect data: ", fmt.Errorf("%s: %v", op, errors.New("ID parameter is missing")))
+		newErrorResponse(c, http.StatusBadRequest, bannerNotSelected)
+		return
+	}
+
+	bannerID, err := strconv.ParseInt(bannerIDStr, 10, 64)
+	if err != nil {
+		h.Logger.Error("Failed convert bannerID to int64: ", fmt.Errorf("%s: %v", op, err))
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
+		return
+	}
+
+	err = h.App.DeleteBanner(bannerID)
+	if err != nil {
+		h.Logger.Error("Error deleting banner: ", fmt.Errorf("%s: %v", op, err))
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
+		return
+	}
+	c.JSON(http.StatusAccepted, nil)
 }

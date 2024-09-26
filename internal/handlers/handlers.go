@@ -3,7 +3,6 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"log/slog"
-	"net/http"
 	"urlshortener/internal/service"
 )
 
@@ -13,6 +12,7 @@ const (
 	userAccessDenied    = "Пользователь не имеет доступа"
 	bannerNotFound      = "Баннер не найден"
 	internalServerError = "Внутренняя ошибка сервера"
+	bannerNotSelected   = "Баннер не выбран"
 )
 
 type Handlers struct {
@@ -46,29 +46,14 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	//r := gin.Default()
 	r := gin.New()
 
-	//r.GET("/user_banner", func(c *gin.Context) {
-	//	c.String(200, "Пока я мастерил фрегат мир стал бессмыслено богат и полон гнуси")
-	//})
-	//r.POST("/banner", h.CreateBanner)
 	r.POST("/tag", h.CreateTag)
 	r.POST("/feature", h.CreateFeature)
+
 	r.POST("/banner", h.CreateBanner)
-	r.GET("/banners", h.GetBanners)
+	r.DELETE("banner/:id", h.DeleteBanner)
+	r.GET("/banner", h.GetBanners)
+
 	r.GET("/user_banner", h.GetUserBanner)
-	r.GET("/test_s", func(c *gin.Context) {
-		// Получаем данные из запроса
-		steps := c.Query("steps")
-		direction := c.Query("direction")
-
-		// Создаем структуру для ответа
-		data := gin.H{
-			"steps":     steps,
-			"direction": direction,
-		}
-
-		// Отправляем JSON-ответ
-		c.JSON(http.StatusOK, data)
-	})
 
 	return r
 }

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/lib/pq"
-	"time"
 	"urlshortener/internal/models"
 )
 
@@ -25,21 +24,12 @@ func (p *Postgres) GetBannersParams(req models.GetBannersReq) ([]*models.BannerW
 		args = append(args, *req.FeatureID)
 		argIndex++
 	}
-
 	query += " GROUP BY b.id, bf.feature_id"
-
 	if req.TagID != nil {
-		//if req.FeatureID != nil {
-		//	query += " AND"
-		//} else {
-		//	query += " WHERE"
-		//}
-		//query += fmt.Sprintf(" bt.tag_id = $%d", argIndex)
 		query += fmt.Sprintf(" HAVING $%d = ANY(array_agg(bt.tag_id))", argIndex)
 		args = append(args, *req.TagID)
 		argIndex++
 	}
-
 	if req.Limit != nil {
 		query += fmt.Sprintf(" LIMIT $%d", argIndex)
 		args = append(args, *req.Limit)
@@ -63,10 +53,7 @@ func (p *Postgres) GetBannersParams(req models.GetBannersReq) ([]*models.BannerW
 	for rows.Next() {
 		var banner models.BannerWithDetails
 		var contentBytes []byte
-		var tagIDs []int64
-		var status bool
-		var createdAt, updatedAt time.Time
-		err := rows.Scan(&banner.BannerID, &banner.FeatureID, pq.Array(&tagIDs), &contentBytes, &status, &createdAt, &updatedAt)
+		err := rows.Scan(&banner.BannerID, &banner.FeatureID, pq.Array(&banner.TagIDs), &contentBytes, &banner.Status, &banner.CreatedAt, &banner.CreatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
@@ -74,11 +61,6 @@ func (p *Postgres) GetBannersParams(req models.GetBannersReq) ([]*models.BannerW
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
-
-		banner.TagIDs = tagIDs
-		banner.Status = &status
-		banner.CreatedAt = &createdAt
-		banner.UpdatedAt = &updatedAt
 		bannerWD = append(bannerWD, &banner)
 	}
 
@@ -129,6 +111,50 @@ func (p *Postgres) CreateBanner(banner models.CreateBannerReq) error {
 	err = tx.Commit()
 	if err != nil {
 		return fmt.Errorf("%s: %v", op, err)
+	}
+
+	return nil
+}
+
+func (p *Postgres) DeleteBanner(bannerID int64) error {
+	const op = "postgres.DeleteBanner"
+
+	tx, err := p.database.Begin()
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	defer tx.Rollback()
+
+	query := `
+		DELETE FROM banner_features
+		WHERE banner_id = $1
+	`
+	_, err = tx.Exec(query, bannerID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	query = `
+		DELETE FROM banner_tags
+		WHERE banner_id = $1
+	`
+	_, err = tx.Exec(query, bannerID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	query = `
+		DELETE FROM banners
+		WHERE id = $1
+	`
+	_, err = tx.Exec(query, bannerID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
 	}
 
 	return nil

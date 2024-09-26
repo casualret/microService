@@ -9,7 +9,8 @@ import (
 type BannerOperations interface {
 	CreateBanner(req models.CreateBannerReq) error
 	GetBanners(req models.GetBannersReq) ([]*models.BannerWithDetails, error)
-	//ChangeBanner(ctx context.Context, bannerID int54, req models.ChangeBannerReq) error
+	DeleteBanner(bannerID int64) error
+	//ChangeBanner(bannerID int64, req models.ChangeBannerReq) error
 }
 
 type BannerManager struct {
@@ -40,4 +41,15 @@ func (bm *BannerManager) GetBanners(req models.GetBannersReq) ([]*models.BannerW
 	}
 
 	return banners, nil
+}
+
+func (bm *BannerManager) DeleteBanner(bannerID int64) error {
+	const op = "service.DeleteBanner"
+
+	err := bm.storage.DeleteBanner(bannerID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
 }
