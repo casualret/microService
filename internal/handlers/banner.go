@@ -140,6 +140,7 @@ func (h *Handlers) GetBanners(c *gin.Context) {
 func (h *Handlers) DeleteBanner(c *gin.Context) {
 	const op = "handlers.DeleteBanner"
 
+	// TODO: FIX PARAM CHECK
 	bannerIDStr := c.Param("id")
 	if bannerIDStr == "" {
 		h.Logger.Error("Incorrect data: ", fmt.Errorf("%s: %v", op, errors.New("ID parameter is missing")))
@@ -161,4 +162,8 @@ func (h *Handlers) DeleteBanner(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusAccepted, nil)
+}
+
+func (h *Handlers) PatchBanner(c *gin.Context) {
+	const op = "handlers.PatchBanner"
 }

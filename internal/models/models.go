@@ -32,7 +32,14 @@ type CreateBannerReq struct {
 	TagIds    []string               `json:"tag_ids"`
 	FeatureID string                 `json:"feature_id"`
 	NewBanner map[string]interface{} `json:"new_banner"`
-	IsActive  string                 `json:"is_active"`
+	IsActive  bool                   `json:"is_active"`
+}
+
+type ChangeBannerReq struct {
+	TagIds    []string               `json:"tag_ids,omitempty"`
+	FeatureID string                 `json:"feature_id,omitempty"`
+	NewBanner map[string]interface{} `json:"new_banner,omitempty"`
+	IsActive  bool                   `json:"is_active,omitempty"`
 }
 
 type GetBannersReq struct {

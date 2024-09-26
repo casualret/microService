@@ -49,9 +49,10 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	r.POST("/tag", h.CreateTag)
 	r.POST("/feature", h.CreateFeature)
 
+	r.GET("/banner", h.GetBanners)
 	r.POST("/banner", h.CreateBanner)
 	r.DELETE("banner/:id", h.DeleteBanner)
-	r.GET("/banner", h.GetBanners)
+	r.PATCH("/banner/:id", h.ChangeBanner)
 
 	r.GET("/user_banner", h.GetUserBanner)
 

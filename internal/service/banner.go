@@ -10,7 +10,7 @@ type BannerOperations interface {
 	CreateBanner(req models.CreateBannerReq) error
 	GetBanners(req models.GetBannersReq) ([]*models.BannerWithDetails, error)
 	DeleteBanner(bannerID int64) error
-	//ChangeBanner(bannerID int64, req models.ChangeBannerReq) error
+	ChangeBanner(bannerID int64, req models.ChangeBannerReq) error
 }
 
 type BannerManager struct {
@@ -47,6 +47,17 @@ func (bm *BannerManager) DeleteBanner(bannerID int64) error {
 	const op = "service.DeleteBanner"
 
 	err := bm.storage.DeleteBanner(bannerID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
+
+func (bm *BannerManager) ChangeBanner(bannerID int64, req models.ChangeBannerReq) error {
+	const op = "service.ChangeBanner"
+
+	err := bm.storage.ChangeBanner(bannerID, req)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}

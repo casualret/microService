@@ -159,3 +159,26 @@ func (p *Postgres) DeleteBanner(bannerID int64) error {
 
 	return nil
 }
+
+func (p *Postgres) ChangeBanner(bannerID int64, banner models.ChangeBannerReq) error {
+	const op = "postgres.ChangeBanner"
+
+	tx, err := p.database.Begin()
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	defer tx.Rollback()
+
+	if banner.NewBanner != nil {
+		query := `UPDATE banners SET content = $1 WHERE id = $2`
+		bannerContent, err := json.Marshal(banner.NewBanner)
+		if err != nil {
+			return fmt.Errorf("%s: %w", op, err)
+		}
+		_, err = tx.Exec(query, bannerContent, bannerID)
+	}
+
+	// TODO: Разобраться как проверять значения и реализовать работу функции через три запроса к бд
+
+	return nil
+}
