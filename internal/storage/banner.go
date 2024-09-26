@@ -71,8 +71,6 @@ func (p *Postgres) GetBannersParams(req models.GetBannersReq) ([]*models.BannerW
 	return bannerWD, nil
 }
 
-// TODO: Разобраться с получением нулевых значений в CreateBanner. Проверять Body запроса
-
 func (p *Postgres) CreateBanner(banner models.CreateBannerReq) error {
 	const op = "postgres.CreateBanner"
 

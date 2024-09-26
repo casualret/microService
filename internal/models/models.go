@@ -29,17 +29,17 @@ type Feature struct {
 }
 
 type CreateBannerReq struct {
-	TagIds    []int64                `json:"tag_ids"`
-	FeatureID int64                  `json:"feature_id"`
-	NewBanner map[string]interface{} `json:"new_banner"`
-	IsActive  bool                   `json:"is_active"`
+	TagIds    []int64                `json:"tag_ids,omitempty"`
+	FeatureID int64                  `json:"feature_id,omitempty"`
+	NewBanner map[string]interface{} `json:"new_banner" binding:"required"`
+	IsActive  bool                   `json:"is_active" binding:"required"`
 }
 
 type ChangeBannerReq struct {
 	TagIds    []string               `json:"tag_ids,omitempty"`
-	FeatureID string                 `json:"feature_id,omitempty"`
+	FeatureID *string                `json:"feature_id,omitempty"`
 	NewBanner map[string]interface{} `json:"new_banner,omitempty"`
-	IsActive  bool                   `json:"is_active,omitempty"`
+	IsActive  *bool                  `json:"is_active,omitempty"`
 }
 
 type GetBannersReq struct {
