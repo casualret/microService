@@ -53,7 +53,7 @@ func (p *Postgres) GetBannersParams(req models.GetBannersReq) ([]*models.BannerW
 	for rows.Next() {
 		var banner models.BannerWithDetails
 		var contentBytes []byte
-		err := rows.Scan(&banner.BannerID, &banner.FeatureID, pq.Array(&banner.TagIDs), &contentBytes, &banner.Status, &banner.CreatedAt, &banner.CreatedAt)
+		err := rows.Scan(&banner.BannerID, &banner.FeatureID, pq.Array(&banner.TagIDs), &contentBytes, &banner.Status, &banner.CreatedAt, &banner.UpdatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
