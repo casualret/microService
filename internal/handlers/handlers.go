@@ -52,7 +52,7 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	r.GET("/banner", h.GetBanners)
 	r.POST("/banner", h.CreateBanner)
 	r.DELETE("banner/:id", h.DeleteBanner)
-	//r.PATCH("/banner/:id", h.ChangeBanner)
+	r.PATCH("/banner/:id", h.ChangeBanner)
 
 	r.GET("/user_banner", h.GetUserBanner)
 

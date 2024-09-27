@@ -138,6 +138,39 @@ func (h *Handlers) DeleteBanner(c *gin.Context) {
 	c.JSON(http.StatusAccepted, nil)
 }
 
-func (h *Handlers) PatchBanner(c *gin.Context) {
+func (h *Handlers) ChangeBanner(c *gin.Context) {
 	const op = "handlers.PatchBanner"
+
+	bannerIDStr := c.Param("id")
+
+	//TODO: Нерабочая проверка
+	if bannerIDStr == "" {
+		h.Logger.Error("Incorrect data: ", fmt.Errorf("%s: %v", op, errors.New("ID parameter is missing")))
+		newErrorResponse(c, http.StatusBadRequest, bannerNotSelected)
+		return
+	}
+
+	bannerID, err := strconv.ParseInt(bannerIDStr, 10, 64)
+	if err != nil {
+		h.Logger.Error("Failed convert bannerID to int64: ", fmt.Errorf("%s: %v", op, err))
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
+		return
+	}
+
+	var input models.ChangeBannerReq
+	err = c.BindJSON(&input)
+	if err != nil {
+		h.Logger.Error("Failed to bind JSON: ", fmt.Errorf("%s: %v", op, err))
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
+		return
+	}
+
+	err = h.App.ChangeBanner(bannerID, input)
+	if err != nil {
+		h.Logger.Error("Error changing banner: ", err)
+		newErrorResponse(c, http.StatusInternalServerError, internalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
 }

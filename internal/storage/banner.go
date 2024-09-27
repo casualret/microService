@@ -169,16 +169,94 @@ func (p *Postgres) ChangeBanner(bannerID int64, banner models.ChangeBannerReq) e
 	}
 	defer tx.Rollback()
 
-	if banner.NewBanner != nil {
-		query := `UPDATE banners SET content = $1 WHERE id = $2`
-		bannerContent, err := json.Marshal(banner.NewBanner)
+	if banner.FeatureID > 0 {
+		query := `
+			DELETE FROM banner_features
+			WHERE banner_id = $1
+		`
+		_, err = tx.Exec(query, bannerID)
 		if err != nil {
 			return fmt.Errorf("%s: %w", op, err)
 		}
-		_, err = tx.Exec(query, bannerContent, bannerID)
+
+		query = `INSERT INTO banner_features (banner_id, feature_id)
+				VALUES ($1, $2)	
+			`
+		_, err = tx.Exec(query, bannerID, banner.FeatureID)
+		if err != nil {
+			return fmt.Errorf("%s: %w", op, err)
+		}
 	}
 
-	// TODO: Разобраться как проверять значения и реализовать работу функции через три запроса к бд
+	if len(banner.TagIds) > 0 {
+		query := `
+			DELETE FROM banner_tags
+			WHERE banner_id = $1
+		`
+		_, err = tx.Exec(query, bannerID)
+		if err != nil {
+			return fmt.Errorf("%s: %w", op, err)
+		}
+
+		query = `
+			INSERT INTO banner_tags (banner_id, tag_id)
+			VALUES ($1, $2)
+		`
+		for _, tagID := range banner.TagIds {
+			_, err := tx.Exec(query, bannerID, tagID)
+			if err != nil {
+				return fmt.Errorf("%s: %w", op, err)
+			}
+		}
+	}
+
+	if banner.NewBanner != nil || banner.IsActive != nil {
+		query := `UPDATE banners SET`
+		if banner.NewBanner == nil {
+			query += ` status = $1 WHERE id = $2;`
+			_, err = tx.Exec(query, *banner.IsActive, bannerID)
+			if err != nil {
+				return fmt.Errorf("%s: %w", op, err)
+			}
+		} else {
+			newContentJSON, err := json.Marshal(banner.NewBanner)
+			if err != nil {
+				return fmt.Errorf("%s: %w", op, err)
+			}
+			if banner.IsActive == nil {
+				query += ` content = $1 WHERE id = $2;`
+				_, err = tx.Exec(query, newContentJSON, bannerID)
+				if err != nil {
+					return fmt.Errorf("%s: %w", op, err)
+				}
+			} else {
+				query += ` content = $1, status = $2 WHERE id = $3;`
+				_, err = tx.Exec(query, newContentJSON, *banner.IsActive, bannerID)
+				if err != nil {
+					return fmt.Errorf("%s: %w", op, err)
+				}
+			}
+		}
+	}
+
+	//	query := `UPDATE banners SET
+	//    CASE
+	//        WHEN NewBanner IS NULL THEN IsActive = $1
+	//        WHEN IsActive IS NULL THEN content = $2
+	//        ELSE content = $3, status = $4
+	//    END
+	//WHERE id = $5;`
+	//
+	//	params := []interface{}{*banner.IsActive, newContentJSON, *banner.NewBanner, bannerID}
+	//	_, err = tx.Exec(query, params...)
+	//	if err != nil {
+	//		return fmt.Errorf("%s: %w", op, err)
+	//	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
 
 	return nil
 }
