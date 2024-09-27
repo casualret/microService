@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/lib/pq"
-	"urlshortener/internal/models"
+	"microService/internal/models"
 )
 
 func (p *Postgres) GetBannersParams(req models.GetBannersReq) ([]*models.BannerWithDetails, error) {

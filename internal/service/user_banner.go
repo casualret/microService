@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"urlshortener/internal/models"
-	"urlshortener/internal/storage"
+	"microService/internal/models"
+	"microService/internal/storage"
 )
 
 type UBannerOperations interface {

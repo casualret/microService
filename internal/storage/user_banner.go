@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/lib/pq"
-	"urlshortener/internal/models"
+	"microService/internal/models"
 )
 
 func (p *Postgres) GetUserBanner(req models.GetUserBannerReq) (*models.BannerWithDetails, error) {

@@ -3,8 +3,8 @@ package handlers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"microService/internal/models"
 	"net/http"
-	"urlshortener/internal/models"
 )
 
 func (h *Handlers) CreateTag(c *gin.Context) {

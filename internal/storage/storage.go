@@ -3,7 +3,7 @@ package storage
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"urlshortener/internal/config"
+	"microService/internal/config"
 )
 
 type Postgres struct {

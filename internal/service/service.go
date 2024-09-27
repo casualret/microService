@@ -2,7 +2,7 @@ package service
 
 import (
 	"log/slog"
-	"urlshortener/internal/storage"
+	"microService/internal/storage"
 )
 
 type App struct {

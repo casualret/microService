@@ -2,7 +2,7 @@ package storage
 
 import (
 	"fmt"
-	"urlshortener/internal/models"
+	"microService/internal/models"
 )
 
 func (p *Postgres) CreateTag(tag models.Tag) error {

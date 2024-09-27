@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"microService/internal/models"
 	"net/http"
 	"strconv"
-	"urlshortener/internal/models"
 )
 
 func (h *Handlers) CreateBanner(c *gin.Context) { // Добавить связь many-to-many

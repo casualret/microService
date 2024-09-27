@@ -4,11 +4,11 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"log/slog"
+	"microService/internal/config"
+	"microService/internal/handlers"
+	"microService/internal/service"
+	"microService/internal/storage"
 	"os"
-	"urlshortener/internal/config"
-	"urlshortener/internal/handlers"
-	"urlshortener/internal/service"
-	"urlshortener/internal/storage"
 )
 
 func main() {
