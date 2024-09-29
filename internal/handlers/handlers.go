@@ -46,6 +46,7 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	//r := gin.Default()
 	r := gin.New()
 
+	r.POST("/user", h.SignUp)
 	r.POST("/tag", h.CreateTag)
 	r.POST("/feature", h.CreateFeature)
 

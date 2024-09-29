@@ -28,6 +28,11 @@ type Feature struct {
 	Name string `json:"name"`
 }
 
+type CreateUserReq struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json: "password" binding "required"`
+}
+
 type CreateBannerReq struct {
 	TagIds    []int64                `json:"tag_ids,omitempty"`
 	FeatureID int64                  `json:"feature_id,omitempty"`
