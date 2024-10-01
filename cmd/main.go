@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	_ "github.com/lib/pq"
 	"log"
 	"log/slog"
@@ -36,7 +37,9 @@ func main() {
 
 	//init service
 
-	app, err := service.NewApp(logger, db)
+	ctx := context.Background()
+
+	app, err := service.NewApp(logger, db, &ctx)
 	if err != nil {
 		logger.Error("error setup application", err)
 		panic(err)

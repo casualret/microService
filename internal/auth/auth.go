@@ -3,7 +3,6 @@ package auth
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"os"
 )
 
 type Claims struct {
@@ -12,7 +11,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-var JwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
+var JwtKey = []byte("Smokin' Sexy Style!!")
 
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
