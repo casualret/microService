@@ -85,11 +85,11 @@ func NewHandlers(service *service.App, logger *slog.Logger) *Handlers {
 //}
 
 func (h *Handlers) InitRoutes() *gin.Engine {
-	r := gin.Default()
-	r.Use(func(c *gin.Context) {
-		c.Set("appCtx", h.App)
-		c.Next()
-	})
+	r := gin.New()
+	//r.Use(func(c *gin.Context) {
+	//	c.Set("appCtx", h.App)
+	//	c.Next()
+	//})
 
 	r.POST("/user", h.SignUp)
 	r.GET("/user", h.SignIn)
