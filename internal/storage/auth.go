@@ -7,13 +7,13 @@ import (
 	"microService/internal/models"
 )
 
-func (p *Postgres) CreateUser(user models.CreateUserReq) error {
+func (p *Postgres) CreateUser(user models.User) error {
 	const op = "postgres.CreateUser"
 
 	//fmt.Println(user.Password)
 
 	query := `INSERT INTO users (email, hash_password, role) VALUES ($1, $2, $3)`
-	_, err := p.database.Query(query, user.Username, user.Password, "admin")
+	_, err := p.database.Query(query, user.Username, user.Password, user.Role)
 	if err != nil {
 		return fmt.Errorf("%s:%d", op, err)
 	}
@@ -21,13 +21,17 @@ func (p *Postgres) CreateUser(user models.CreateUserReq) error {
 	return nil
 }
 
-func (p *Postgres) SignIn(user models.User) (string, error) {
+func (p *Postgres) SignIn(user models.UserLogin) (string, error) {
 	const op = "postgres.SignIn"
 
-	query := `SELECT users.hash_password FROM users WHERE email = $1`
+	query := `SELECT users.hash_password, users.role FROM users WHERE email = $1`
 
-	var password string
-	err := p.database.Get(&password, query, user.Username)
+	var password, role string
+	err := p.database.QueryRow(query, user.Username).Scan(&password, &role)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
@@ -36,7 +40,7 @@ func (p *Postgres) SignIn(user models.User) (string, error) {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
-	token, err := auth.GenerateToken(user.Username)
+	token, err := auth.GenerateToken(user.Username, role)
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}

@@ -8,8 +8,8 @@ import (
 )
 
 type Authentication interface {
-	SignUp(user models.CreateUserReq) error
-	SignIn(user models.User) (string, error)
+	SignUp(user models.User) error
+	SignIn(user models.UserLogin) (string, error)
 }
 
 type AuthenticationService struct {
@@ -20,7 +20,7 @@ func NewAuthenticationService(storage *storage.Postgres) *AuthenticationService 
 	return &AuthenticationService{storage: storage}
 }
 
-func (a *AuthenticationService) SignUp(user models.CreateUserReq) error {
+func (a *AuthenticationService) SignUp(user models.User) error {
 	const op = "service.SignUp"
 
 	var err error
@@ -35,7 +35,7 @@ func (a *AuthenticationService) SignUp(user models.CreateUserReq) error {
 	return nil
 }
 
-func (a *AuthenticationService) SignIn(user models.User) (string, error) {
+func (a *AuthenticationService) SignIn(user models.UserLogin) (string, error) {
 	const op = "service.SignIn"
 
 	token, err := a.storage.SignIn(user)

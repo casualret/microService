@@ -3,12 +3,13 @@ package auth
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"time"
 )
 
-type Claims struct {
+type TokenClaims struct {
+	jwt.RegisteredClaims
 	Username string `json:"username"`
 	Role     string `json:"role"`
-	jwt.RegisteredClaims
 }
 
 var JwtKey = []byte("Smokin' Sexy Style!!")
@@ -18,11 +19,17 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func GenerateToken(username string) (string, error) {
+func GenerateToken(username string, role string) (string, error) {
+	expirationTime := time.Minute * 60
 
-	claims := &jwt.RegisteredClaims{Issuer: username}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &TokenClaims{
+		Username: username,
+		Role:     role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expirationTime)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	})
 
 	tokenString, err := token.SignedString(JwtKey)
 	if err != nil {
@@ -31,13 +38,3 @@ func GenerateToken(username string) (string, error) {
 
 	return tokenString, nil
 }
-
-//func GenerateRandomKey() string {
-//	key := make([]byte, 32) // generate a 256 bit key
-//	_, err := rand.Read(key)
-//	if err != nil {
-//		panic("Failed to generate random key: " + err.Error())
-//	}
-//
-//	return base64.StdEncoding.EncodeToString(key)
-//}

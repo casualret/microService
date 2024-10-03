@@ -13,7 +13,7 @@ import (
 func (h *Handlers) SignUp(c *gin.Context) {
 	const op = "handlers.SignUp"
 
-	var input models.CreateUserReq
+	var input models.User
 	err := c.BindJSON(&input)
 	if err != nil {
 		h.Logger.Error("Failed to bind JSON: ", fmt.Errorf("%s: %v", op, err))
@@ -35,7 +35,7 @@ func (h *Handlers) SignIn(c *gin.Context) {
 
 	const op = "handlers.SignIn"
 
-	var input models.User
+	var input models.UserLogin
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		h.Logger.Error("Failed to bind JSON: ", fmt.Errorf("%s: %v", op, err))
@@ -58,38 +58,59 @@ func (h *Handlers) SignIn(c *gin.Context) {
 
 func (h *Handlers) JWTAuth(c *gin.Context) {
 	const BearerSchema = "Bearer "
+	const op = "handlers.JWTAuth"
+
 	header := c.GetHeader("Authorization")
 	if header == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing Authorization Header"})
-		c.Abort()
+		h.Logger.Error("Missing Authorization Header", op)
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
 		return
 	}
 
 	if !strings.HasPrefix(header, BearerSchema) {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization Header"})
-		c.Abort()
+		h.Logger.Error("Invalid Authorization Header", op)
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
 		return
 	}
 
 	tokenStr := header[len(BearerSchema):]
-	claims := &auth.Claims{}
+	claims := &auth.TokenClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return auth.JwtKey, nil
 	})
 
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-		c.Abort()
+		h.Logger.Error("Invalid Token: ", fmt.Errorf("%s: %v", op, err))
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
 		return
 	}
 
 	if !token.Valid {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-		c.Abort()
+		h.Logger.Error("Invalid Token: ", fmt.Errorf("%s: %v", op, err))
+		newErrorResponse(c, http.StatusBadRequest, incorrectData)
 		return
 	}
 
 	c.Set("username", claims.Username)
+	c.Set("role", claims.Role)
+	c.Next()
+}
+
+func (h *Handlers) isAdminMiddleware(c *gin.Context) {
+	const op = "handlers.isAdminMiddleware"
+
+	role, ok := c.Get("role")
+	if !ok {
+		h.Logger.Error("Error get role: ", op)
+		newErrorResponse(c, http.StatusUnauthorized, userUnauthorized)
+		return
+	}
+
+	if role != "admin" {
+		h.Logger.Error("User is not admin: ", op)
+		newErrorResponse(c, http.StatusForbidden, userAccessDenied)
+		return
+	}
 	c.Next()
 }

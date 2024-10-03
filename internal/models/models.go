@@ -31,9 +31,10 @@ type Feature struct {
 type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Role     string `json:"role"`
 }
 
-type CreateUserReq struct {
+type UserLogin struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json: "password" binding "required"`
 }
