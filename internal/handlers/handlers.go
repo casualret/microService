@@ -44,46 +44,6 @@ func NewHandlers(service *service.App, logger *slog.Logger) *Handlers {
 	}
 }
 
-//func JWTAuth() gin.HandlerFunc {
-//	return func(c *gin.Context) {
-//		const BearerSchema = "Bearer "
-//		header := c.GetHeader("Authorization")
-//		if header == "" {
-//			c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing Authorization Header"})
-//			c.Abort()
-//			return
-//		}
-//
-//		if !strings.HasPrefix(header, BearerSchema) {
-//			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization Header"})
-//			c.Abort()
-//			return
-//		}
-//
-//		tokenStr := header[len(BearerSchema):]
-//		claims := &auth.Claims{}
-//
-//		token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-//			return auth.JwtKey, nil
-//		})
-//
-//		if err != nil {
-//			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-//			c.Abort()
-//			return
-//		}
-//
-//		if !token.Valid {
-//			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-//			c.Abort()
-//			return
-//		}
-//
-//		c.Set("username", claims.Username)
-//		c.Next()
-//	}
-//}
-
 func (h *Handlers) InitRoutes() *gin.Engine {
 	r := gin.New()
 	//r.Use(func(c *gin.Context) {
@@ -94,19 +54,19 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	r.POST("/user", h.SignUp)
 	r.GET("/user", h.SignIn)
 
-	r.POST("/tag", h.CreateTag)
-	r.POST("/feature", h.CreateFeature)
+	//r.POST("/tag", h.CreateTag)
+	//r.POST("/feature", h.CreateFeature)
+	r.Use(h.JWTAuth)
+	r.GET("/user_banner", h.GetUserBanner)
 
 	banner := r.Group("/banner")
-	banner.Use(h.JWTAuth)
+	banner.Use(h.isAdminMiddleware)
 	{
 		banner.GET("", h.isAdminMiddleware, h.GetBanners)
 		banner.POST("", h.CreateBanner)
 		banner.DELETE("/:id", h.DeleteBanner)
 		banner.PATCH("/:id", h.ChangeBanner)
 	}
-
-	r.GET("/user_banner", h.GetUserBanner)
 
 	return r
 }

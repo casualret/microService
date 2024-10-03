@@ -46,7 +46,7 @@ func (h *Handlers) SignIn(c *gin.Context) {
 	token, err := h.App.SignIn(input)
 	if err != nil {
 		h.Logger.Error("Authentication failed: ", err)
-		newErrorResponse(c, http.StatusInternalServerError, internalServerError)
+		newErrorResponse(c, http.StatusInternalServerError, errorAuthorize)
 		return
 	}
 
@@ -82,13 +82,13 @@ func (h *Handlers) JWTAuth(c *gin.Context) {
 
 	if err != nil {
 		h.Logger.Error("Invalid Token: ", fmt.Errorf("%s: %v", op, err))
-		newErrorResponse(c, http.StatusBadRequest, incorrectData)
+		newErrorResponse(c, http.StatusBadRequest, errorParseToken)
 		return
 	}
 
 	if !token.Valid {
 		h.Logger.Error("Invalid Token: ", fmt.Errorf("%s: %v", op, err))
-		newErrorResponse(c, http.StatusBadRequest, incorrectData)
+		newErrorResponse(c, http.StatusBadRequest, userUnauthorized)
 		return
 	}
 
