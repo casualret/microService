@@ -62,7 +62,7 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	banner := r.Group("/banner")
 	banner.Use(h.isAdminMiddleware)
 	{
-		banner.GET("", h.isAdminMiddleware, h.GetBanners)
+		banner.GET("", h.GetBanners)
 		banner.POST("", h.CreateBanner)
 		banner.DELETE("/:id", h.DeleteBanner)
 		banner.PATCH("/:id", h.ChangeBanner)

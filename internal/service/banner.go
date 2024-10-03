@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"microService/internal/models"
+	"microService/internal/redis_cash"
 	"microService/internal/storage"
 )
 
@@ -15,10 +16,11 @@ type BannerOperations interface {
 
 type BannerManager struct {
 	storage *storage.Postgres
+	cash    *redis_cash.RedisCash
 }
 
-func NewBannerManager(storage *storage.Postgres) *BannerManager {
-	return &BannerManager{storage: storage}
+func NewBannerManager(storage *storage.Postgres, cash *redis_cash.RedisCash) *BannerManager {
+	return &BannerManager{storage: storage, cash: cash}
 }
 
 func (bm *BannerManager) CreateBanner(req models.CreateBannerReq) error {

@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"microService/internal/config"
 	"microService/internal/handlers"
+	"microService/internal/redis_cash"
 	"microService/internal/service"
 	"microService/internal/storage"
 	"os"
@@ -35,11 +36,17 @@ func main() {
 		panic(err)
 	}
 
-	//init service
+	cash := redis_cash.NewRedisClient()
 
 	ctx := context.Background()
 
-	app, err := service.NewApp(logger, db, &ctx)
+	//if pong := cash.Client.Ping(ctx); pong.String() != "ping: PONG" {
+	//	log.Println("-------------Error connection redis ----------:", pong)
+	//}
+
+	//init service
+
+	app, err := service.NewApp(logger, db, cash, &ctx)
 	if err != nil {
 		logger.Error("error setup application", err)
 		panic(err)
