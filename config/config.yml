@@ -5,7 +5,7 @@ http_server:
 postgres:
   pg_user: "postgres"
   pg_database: "postgres"
-  pg_host: "localhost"
+  pg_host: "postgresql"
   pg_port: "5432"
   pg_sslmode: "disable"
   pg_password: "1408"

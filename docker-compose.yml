@@ -1,0 +1,34 @@
+services:
+  backend:
+    container_name: microservice
+    build: ./
+    ports:
+      - 8001:8001
+    depends_on:
+      - postgresql
+    networks:
+      - ps
+
+  postgresql:
+    image: postgres:17.0-alpine
+    container_name: ps-psql
+    ports:
+      - "5436:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1408
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - ps
+
+  redis:
+    image: redis:alpine
+    container_name: docker-redis
+    ports:
+      - "6380:6379"
+
+networks:
+  ps:
+
