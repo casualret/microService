@@ -3,7 +3,7 @@ services:
     container_name: microservice
     build: ./
     ports:
-      - 8001:8001
+      - 8001:8081
     depends_on:
       - postgresql
     networks:
@@ -20,6 +20,7 @@ services:
       - POSTGRES_PASSWORD=1408
     volumes:
       - ./data:/var/lib/postgresql/data
+      - ./schema/000001_init.up.sql:/docker-entrypoint-initdb.d/001.sql
     networks:
       - ps
 

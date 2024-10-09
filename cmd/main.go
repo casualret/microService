@@ -59,7 +59,7 @@ func main() {
 
 	//start server
 
-	err = router.Run("localhost:8081")
+	err = router.Run("0.0.0.0:8081")
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

@@ -50,22 +50,27 @@ func (h *Handlers) InitRoutes() *gin.Engine {
 	//	c.Set("appCtx", h.App)
 	//	c.Next()
 	//})
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "pong"})
+	})
 
 	r.POST("/user", h.SignUp)
 	r.GET("/user", h.SignIn)
 
-	//r.POST("/tag", h.CreateTag)
-	//r.POST("/feature", h.CreateFeature)
-	r.Use(h.JWTAuth)
-	r.GET("/user_banner", h.GetUserBanner)
+	r.POST("/tag", h.CreateTag)
+	r.POST("/feature", h.CreateFeature)
 
-	banner := r.Group("/banner")
-	banner.Use(h.isAdminMiddleware)
+	r.Use(h.JWTAuth)
 	{
-		banner.GET("", h.GetBanners)
-		banner.POST("", h.CreateBanner)
-		banner.DELETE("/:id", h.DeleteBanner)
-		banner.PATCH("/:id", h.ChangeBanner)
+		r.GET("/user_banner", h.GetUserBanner)
+		banner := r.Group("/banner")
+		banner.Use(h.isAdminMiddleware)
+		{
+			banner.GET("", h.GetBanners)
+			banner.POST("", h.CreateBanner)
+			banner.DELETE("/:id", h.DeleteBanner)
+			banner.PATCH("/:id", h.ChangeBanner)
+		}
 	}
 
 	return r

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"microService/internal/models"
 	"microService/internal/redis_cash"
@@ -17,10 +18,11 @@ type BannerOperations interface {
 type BannerManager struct {
 	storage *storage.Postgres
 	cash    *redis_cash.RedisCash
+	ctx     *context.Context
 }
 
-func NewBannerManager(storage *storage.Postgres, cash *redis_cash.RedisCash) *BannerManager {
-	return &BannerManager{storage: storage, cash: cash}
+func NewBannerManager(storage *storage.Postgres, cash *redis_cash.RedisCash, ctx *context.Context) *BannerManager {
+	return &BannerManager{storage: storage, cash: cash, ctx: ctx}
 }
 
 func (bm *BannerManager) CreateBanner(req models.CreateBannerReq) error {
@@ -41,6 +43,8 @@ func (bm *BannerManager) GetBanners(req models.GetBannersReq) ([]*models.BannerW
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
+
+	err = bm.cash.SaveBanner(bm.ctx, banners...)
 
 	return banners, nil
 }
